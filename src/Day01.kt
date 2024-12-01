@@ -1,21 +1,35 @@
+import kotlin.math.abs
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    val sampleInput = runCatching { readInput("Day01_test") }.onFailure { error(it) }.getOrElse { emptyList() }
+    val realInput = runCatching { readInput("Day01") }.onFailure { error(it) }.getOrElse { emptyList() }
+
+    val (testLeftList, testRightList) = splitIntoLeftAndRight(sampleInput)
+    println("Total distance for sample input: ${calculateDistance(testLeftList, testRightList)}")
+    println("Similarity Score for test input: ${calculateSimilarityScore(testLeftList, testRightList)}")
+
+    val (leftList, rightList) = splitIntoLeftAndRight(realInput)
+    println("Total distance for real input: ${calculateDistance(leftList, rightList)}")
+    println("Similarity Score for test input: ${calculateSimilarityScore(leftList, rightList)}")
+
+}
+
+fun calculateDistance(left: List<Int>, right: List<Int>) =
+    left.sorted().zip(right.sorted()).sumOf { (leftNum, rightNum) ->
+        abs(leftNum - rightNum)
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+fun calculateSimilarityScore(left: List<Int>, right: List<Int>) =
+    right.groupingBy { it }.eachCount().let { rightCountMap ->
+        left.sumOf { it.times(rightCountMap[it] ?: 0) }
     }
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+fun splitIntoLeftAndRight(input: List<String>, delimiter: String = "   "): Pair<List<Int>, List<Int>> {
+    val pairLines = input.map {
+        val (left, right) = it.split(delimiter)
+        left to right
+    }
 
-    // Read the input from the `src/Day01.txt` file.
-    val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+    return pairLines.map { (first, _) -> first.toInt() } to pairLines.map { (_, last) -> last.toInt() }
 }
