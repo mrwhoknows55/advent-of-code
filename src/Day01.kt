@@ -1,8 +1,8 @@
 import kotlin.math.abs
 
 fun main() {
-    val sampleInput = runCatching { readInput("Day01_test") }.onFailure { error(it) }.getOrElse { emptyList() }
-    val realInput = runCatching { readInput("Day01") }.onFailure { error(it) }.getOrElse { emptyList() }
+    val sampleInput = readDayInput(dayNumber = 1, testInput = true)
+    val realInput = readDayInput(dayNumber = 1, testInput = false)
 
     val (testLeftList, testRightList) = splitIntoLeftAndRight(sampleInput)
     println("Total distance for sample input: ${calculateDistance(testLeftList, testRightList)}")
